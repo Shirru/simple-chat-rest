@@ -31,7 +31,7 @@ public class ChatUser implements Serializable{
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "contact", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "chat_contact")
     private List<Contact> contacts;
@@ -56,7 +56,7 @@ public class ChatUser implements Serializable{
     public Contact addContact(Contact contact) {
         boolean isContactExist = false;
         for (Contact c : contacts) {
-            if (c.getPhone() == contact.getPhone()) {
+            if (c.getPhone().equals(contact.getPhone())) {
                 isContactExist = true;
                 break;
             }

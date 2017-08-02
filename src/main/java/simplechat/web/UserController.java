@@ -59,14 +59,14 @@ public class UserController {
         return chatUser;
     }
 
-    @PostAuthorize("returnObject.username == principal.username")
+    @PostAuthorize("returnObject.username == principal.name")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
     public ChatUser updateUserStatus(@PathVariable Long id, @RequestBody Map<String, String> status,
                                      Principal principal) {
         ChatUser chatUser = userRepository.findById(id);
         if (chatUser == null) { throw new ChatUserNotFoundException(id);}
 
-        if(chatUser.getUsername() == principal.getName())
+        if(chatUser.getUsername().equals(principal.getName()))
             return userRepository.updateStatusById(id, status.get("status"));
         else { throw new BadCredentialsException(principal.getName());}
     }

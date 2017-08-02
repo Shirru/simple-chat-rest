@@ -12,7 +12,9 @@ public class UserCredentialsCheck {
     public ChatUser checkUserCredentials(Long id, Principal principal, UserRepository userRepository) {
         ChatUser chatUser = userRepository.findById(id);
         if (chatUser == null) {throw new ChatUserNotFoundException(id);}
-        if (chatUser.getUsername() != principal.getName()) { throw new BadCredentialsException("Access denied");}
+        if (!chatUser.getUsername().equals(principal.getName())) {
+            throw new BadCredentialsException("Access denied");
+        }
         return chatUser;
     }
 }
