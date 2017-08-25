@@ -1,8 +1,10 @@
 package simplechat.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -20,7 +22,21 @@ import javax.sql.DataSource;
 @ComponentScan("simplechat")
 @EnableTransactionManagement
 @EnableJpaRepositories("simplechat.data")
+@PropertySource("/WEB-INF/app.properties")
 public class DataConfig {
+
+    @Value("${jpa.driverClassName}")
+    private String driverClassName;
+
+    @Value("${jpa.url}")
+    private String jpaURL;
+
+    @Value("${jpa.username}")
+    private String username;
+
+    @Value("${jpa.password}")
+    private String password;
+
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
                                                                        JpaVendorAdapter jpaVendorAdapter) {
@@ -44,10 +60,10 @@ public class DataConfig {
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/spring-chat-db?currentSchema=public");
-        dataSource.setUsername("springrest_user");
-        dataSource.setPassword("389kva5rs");
+        dataSource.setDriverClassName(driverClassName);
+        dataSource.setUrl(jpaURL);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
         return dataSource;
     }
 
