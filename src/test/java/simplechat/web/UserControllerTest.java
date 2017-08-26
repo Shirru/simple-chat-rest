@@ -34,11 +34,12 @@ public class UserControllerTest {
     public void setUp() {
         objectMapper = new ObjectMapper();
         mockRepository = mock(UserRepository.class);
-        unsaved = new ChatUser("shirru", "Anna", "V", "89110362157");
-        saved = new ChatUser(1L, "shirru", "Anna", "V",
-                "89110362157", Status.online, null);
+        unsaved = new ChatUser("shirru", "qwerty","Anna",
+                "V", "89110362157");
+        saved = new ChatUser(1L, "shirru", "qwerty","Anna",
+                "V","89110362157", Status.online, null);
 
-        ChatUser merged = new ChatUser(1L, "shirru", "Anna", "V",
+        ChatUser merged = new ChatUser(1L, "shirru", "qwerty","Anna", "V",
                 "89110362157", Status.offline, null);
 
         when(mockRepository.save(unsaved)).thenReturn(saved);

@@ -18,6 +18,9 @@ public class ChatUser implements Serializable{
     @Column(name = "username", unique = true)
     private String username;
 
+    @Column(name = "password")
+    private String password;
+
     @Column(name = "firstname")
     private String firstName;
 
@@ -38,14 +41,15 @@ public class ChatUser implements Serializable{
 
     ChatUser() {}
 
-    public ChatUser(String username, String firstName, String lastName, String phone) {
-        this(null, username, firstName, lastName, phone, Status.online, new ArrayList<Contact>());
+    public ChatUser(String username, String password, String firstName, String lastName, String phone) {
+        this(null, username, password, firstName,lastName, phone, Status.online, new ArrayList<Contact>());
     }
 
-    public ChatUser(Long id, String username, String firstName, String lastName,
+    public ChatUser(Long id, String username, String password, String firstName, String lastName,
                     String phone, Status status, List<Contact> contacts) {
         this.id = id;
         this.username = username;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
@@ -85,6 +89,14 @@ public class ChatUser implements Serializable{
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {

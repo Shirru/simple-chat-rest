@@ -66,9 +66,9 @@ public class ExceptionHandlerTest {
     @Test
     @WithMockUser(username = "shirru")
     public void shouldSendStatusConflictWhenUserAlreadyExist() throws Exception {
-        ChatUser chatUser = new ChatUser("shirru", "Anna", "V",
+        ChatUser chatUser = new ChatUser("shirru", "qwerty","Anna", "V",
                 "89110362157");
-        ChatUser sameUser = new ChatUser("shirru", "Anna", "V",
+        ChatUser sameUser = new ChatUser("shirru", "qwerty","Anna", "V",
                 "89110362157");
         userRepository.save(chatUser);
 
@@ -105,7 +105,7 @@ public class ExceptionHandlerTest {
     @Test
     @WithMockUser("lynx")
     public void shouldSendStatusUnauthorizedWhenUpdateUserInfo() throws Exception {
-        ChatUser chatUser = new ChatUser("shirru", "Anna", "V",
+        ChatUser chatUser = new ChatUser("shirru", "qwerty","Anna", "V",
                 "89110362157");
         ChatUser saved = userRepository.save(chatUser);
 
@@ -134,9 +134,9 @@ public class ExceptionHandlerTest {
 
     @Test
     public void shouldSendStatusConflictWhenContactAlreadyExist() throws Exception{
-        ChatUser chatUser = new ChatUser("shirru", "Anna", "V",
+        ChatUser chatUser = new ChatUser("shirru", "qwerty","Anna", "V",
                 "89110362157");
-        ChatUser contact = new ChatUser("wqe", "A", "V",
+        ChatUser contact = new ChatUser("wqe", "qwerty","A", "V",
                 "77777777777");
         ChatUser saved = userRepository.save(chatUser);
         userRepository.save(contact);

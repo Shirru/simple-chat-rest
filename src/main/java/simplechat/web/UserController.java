@@ -5,8 +5,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import simplechat.data.UserRepository;
@@ -30,11 +30,13 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @PreAuthorize("#user.username == principal.username")
     @RequestMapping(value = "/register", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity<Map<String, Long>> registerUser(@RequestBody ChatUser user,
                                                           UriComponentsBuilder ucb) {
         Map<String, Long> userId = new HashMap<String, Long>();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         ChatUser savedUser = userRepository.save(user);
 
         if (savedUser == null) { throw new ChatUserAlreadyExistException();}

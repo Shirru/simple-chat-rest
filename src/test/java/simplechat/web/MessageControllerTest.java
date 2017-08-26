@@ -51,11 +51,11 @@ public class MessageControllerTest {
         MessageNotificationService mockNotificationService = mock(MessageNotificationService.class);
 
         users = new ArrayList<ChatUser>();
-        users.add(new ChatUser(1L, "shirru", "Anna", "V",
+        users.add(new ChatUser(1L, "shirru", "qwerty","Anna", "V",
                 "89110362157", Status.online, new ArrayList<Contact>()));
-        users.add(new ChatUser(2L, "user", "Jon", "Snow",
+        users.add(new ChatUser(2L, "user", "qwerty","Jon", "Snow",
                 "11111111111", Status.online,  new ArrayList<Contact>()));
-        users.add(new ChatUser(3L, "misterUser", "Jack", "Smith",
+        users.add(new ChatUser(3L, "misterUser", "qwerty","Jack", "Smith",
                 "2222222222", Status.online, new ArrayList<Contact>()));
 
         users.get(0).addContact(new Contact(users.get(1).getUsername(), users.get(1).getPhone()));

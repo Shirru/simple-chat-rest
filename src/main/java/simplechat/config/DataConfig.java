@@ -25,16 +25,16 @@ import javax.sql.DataSource;
 @PropertySource("/WEB-INF/app.properties")
 public class DataConfig {
 
-    @Value("${jpa.driverClassName}")
+    @Value("${db.driverClassName}")
     private String driverClassName;
 
-    @Value("${jpa.url}")
-    private String jpaURL;
+    @Value("${db.url}")
+    private String dataSourceURL;
 
-    @Value("${jpa.username}")
+    @Value("${db.username}")
     private String username;
 
-    @Value("${jpa.password}")
+    @Value("${db.password}")
     private String password;
 
     @Bean
@@ -61,7 +61,7 @@ public class DataConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(driverClassName);
-        dataSource.setUrl(jpaURL);
+        dataSource.setUrl(dataSourceURL);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
         return dataSource;

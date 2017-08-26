@@ -42,10 +42,14 @@ public class JpaMessageRepositoryTest {
     @Before
     public void setUp() {
         users = new ArrayList<ChatUser>();
-        users.add(new ChatUser("shirru", "Anna", "V", "89110362157"));
-        users.add(new ChatUser("lynx", "Vlad", "A", "12345678911"));
-        users.add(new ChatUser("jh", "John", "A", "11111111111"));
-        users.add(new ChatUser("misterUser", "Jack", "Smith", "222222222"));
+        users.add(new ChatUser("shirru", "qwerty","Anna",
+                "V", "89110362157"));
+        users.add(new ChatUser("lynx", "qwerty","Vlad",
+                "A", "12345678911"));
+        users.add(new ChatUser("jh", "qwerty","John",
+                "A", "11111111111"));
+        users.add(new ChatUser("misterUser", "qwerty","Jack",
+                "Smith", "222222222"));
 
         for (ChatUser user : users) {
             userRepository.save(user);
