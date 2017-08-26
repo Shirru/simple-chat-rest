@@ -1,15 +1,19 @@
 package simplechat.init;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import javax.servlet.DispatcherType;
 import java.io.IOException;
+import java.util.EnumSet;
 
 public class EmbeddedJetty {
 
@@ -30,12 +34,15 @@ public class EmbeddedJetty {
     }
 
     private static ServletContextHandler getServletContextHandler(WebApplicationContext context) throws IOException {
-        ServletContextHandler contextHandler = new ServletContextHandler();
+        ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.setErrorHandler(null);
         contextHandler.setContextPath(CONTEXT_PATH);
         contextHandler.addServlet(new ServletHolder(new DispatcherServlet(context)), MAPPING_URL);
         contextHandler.addEventListener(new ContextLoaderListener(context));
         contextHandler.setResourceBase(new ClassPathResource("webapp").getURI().toString());
+        contextHandler.addFilter(new FilterHolder(
+                new DelegatingFilterProxy("springSecurityFilterChain")), "/*",
+                EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
         return contextHandler;
     }
 
