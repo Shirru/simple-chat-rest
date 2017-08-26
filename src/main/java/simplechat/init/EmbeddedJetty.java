@@ -1,9 +1,10 @@
 package simplechat.init;
 
-import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
@@ -27,7 +28,8 @@ public class EmbeddedJetty {
     }
 
     private void startJetty(int port) throws Exception {
-        Server server = new Server(port);
+        Server server = new Server();
+        server.setConnectors(getConnectors(server));
         server.setHandler(getServletContextHandler(getContext()));
         server.start();
         server.join();
@@ -50,5 +52,26 @@ public class EmbeddedJetty {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.setConfigLocation(CONFIG_LOCATION);
         return context;
+    }
+
+    private static Connector[] getConnectors(Server server){
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(DEFAULT_PORT);
+
+        HttpConfiguration https = new HttpConfiguration();
+        https.addCustomizer(new SecureRequestCustomizer());
+
+        SslContextFactory sslContextFactory = new SslContextFactory();
+        sslContextFactory.setKeyStorePath(EmbeddedJetty.class
+                .getResource("/webapp/WEB-INF/keystore.jks").toExternalForm());
+        sslContextFactory.setKeyStorePassword("qwertyasdfg");
+        sslContextFactory.setKeyManagerPassword("qwertyasdfg");
+
+        ServerConnector sslConnector = new ServerConnector(server,
+                new SslConnectionFactory(sslContextFactory, "http/1.1"),
+                new HttpConnectionFactory(https));
+        sslConnector.setPort(8443);
+
+        return new Connector[] {connector, sslConnector};
     }
 }
