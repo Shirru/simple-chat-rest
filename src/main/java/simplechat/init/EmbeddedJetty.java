@@ -14,20 +14,24 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.DispatcherType;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.EnumSet;
+import java.util.Properties;
 
 public class EmbeddedJetty {
 
-    private static final int DEFAULT_PORT = 8080;
-    private static final String CONTEXT_PATH = "/";
-    private static final String CONFIG_LOCATION = "simplechat.config";
-    private static final String MAPPING_URL = "/*";
+    private static Properties properties;
 
     public static void main(String[] args) throws Exception {
-        new EmbeddedJetty().startJetty(DEFAULT_PORT);
+        properties = new Properties();
+        InputStream stream = EmbeddedJetty.class.getResourceAsStream("/webapp/WEB-INF/app.properties");
+        properties.load(stream);
+        stream.close();
+
+        new EmbeddedJetty().startJetty();
     }
 
-    private void startJetty(int port) throws Exception {
+    private void startJetty() throws Exception {
         Server server = new Server();
         server.setConnectors(getConnectors(server));
         server.setHandler(getServletContextHandler(getContext()));
@@ -38,8 +42,9 @@ public class EmbeddedJetty {
     private static ServletContextHandler getServletContextHandler(WebApplicationContext context) throws IOException {
         ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         contextHandler.setErrorHandler(null);
-        contextHandler.setContextPath(CONTEXT_PATH);
-        contextHandler.addServlet(new ServletHolder(new DispatcherServlet(context)), MAPPING_URL);
+        contextHandler.setContextPath(properties.getProperty("jetty.contextPath"));
+        contextHandler.addServlet(new ServletHolder(new DispatcherServlet(context)),
+                properties.getProperty("jetty.mappingURL"));
         contextHandler.addEventListener(new ContextLoaderListener(context));
         contextHandler.setResourceBase(new ClassPathResource("webapp").getURI().toString());
         contextHandler.addFilter(new FilterHolder
@@ -50,7 +55,7 @@ public class EmbeddedJetty {
 
     private static WebApplicationContext getContext() {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.setConfigLocation(CONFIG_LOCATION);
+        context.setConfigLocation(properties.getProperty("jetty.configLocation"));
         return context;
     }
 
@@ -60,14 +65,14 @@ public class EmbeddedJetty {
 
         SslContextFactory sslContextFactory = new SslContextFactory();
         sslContextFactory.setKeyStorePath(EmbeddedJetty.class
-                .getResource("/webapp/WEB-INF/keystore.jks").toExternalForm());
-        sslContextFactory.setKeyStorePassword("qwertyasdfg");
-        sslContextFactory.setKeyManagerPassword("qwertyasdfg");
+                .getResource(properties.getProperty("jetty.keyStorePath")).toExternalForm());
+        sslContextFactory.setKeyStorePassword(properties.getProperty("jetty.keyStorePassword"));
+        sslContextFactory.setKeyManagerPassword(properties.getProperty("jetty.keyManagerPassword"));
 
         ServerConnector sslConnector = new ServerConnector(server,
                 new SslConnectionFactory(sslContextFactory, "http/1.1"),
                 new HttpConnectionFactory(https));
-        sslConnector.setPort(8443);
+        sslConnector.setPort(Integer.parseInt(properties.getProperty("jetty.port")));
 
         return new Connector[] {sslConnector};
     }
