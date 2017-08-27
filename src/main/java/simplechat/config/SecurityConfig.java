@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .formLogin()
                     .and()
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.POST,"/api/user/register").permitAll()
+                    .antMatchers(HttpMethod.POST,"/api/user/register").anonymous()
                     .anyRequest().authenticated()
                     .and()
                 .requiresChannel()

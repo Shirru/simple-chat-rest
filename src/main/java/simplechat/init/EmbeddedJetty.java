@@ -42,9 +42,9 @@ public class EmbeddedJetty {
         contextHandler.addServlet(new ServletHolder(new DispatcherServlet(context)), MAPPING_URL);
         contextHandler.addEventListener(new ContextLoaderListener(context));
         contextHandler.setResourceBase(new ClassPathResource("webapp").getURI().toString());
-        contextHandler.addFilter(new FilterHolder(
-                new DelegatingFilterProxy("springSecurityFilterChain")), "/*",
-                EnumSet.of(DispatcherType.REQUEST, DispatcherType.ERROR));
+        contextHandler.addFilter(new FilterHolder
+                (new DelegatingFilterProxy("springSecurityFilterChain")),
+                "/*", EnumSet.allOf(DispatcherType.class));
         return contextHandler;
     }
 
@@ -55,9 +55,6 @@ public class EmbeddedJetty {
     }
 
     private static Connector[] getConnectors(Server server){
-        ServerConnector connector = new ServerConnector(server);
-        connector.setPort(DEFAULT_PORT);
-
         HttpConfiguration https = new HttpConfiguration();
         https.addCustomizer(new SecureRequestCustomizer());
 
@@ -72,6 +69,6 @@ public class EmbeddedJetty {
                 new HttpConnectionFactory(https));
         sslConnector.setPort(8443);
 
-        return new Connector[] {connector, sslConnector};
+        return new Connector[] {sslConnector};
     }
 }

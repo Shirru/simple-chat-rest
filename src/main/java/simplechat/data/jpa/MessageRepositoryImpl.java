@@ -1,5 +1,7 @@
 package simplechat.data.jpa;
 
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import simplechat.data.UserMessagesCustom;
 import simplechat.domain.ChatUser;
 import simplechat.domain.Message;
@@ -8,6 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Repository
+@Transactional
 public class MessageRepositoryImpl implements UserMessagesCustom {
 
     @PersistenceContext
@@ -22,7 +26,6 @@ public class MessageRepositoryImpl implements UserMessagesCustom {
                 .setParameter("contactId", contactId)
                 .getResultList();
 
-        if(messages.isEmpty()) return null;
         return messages;
     }
 

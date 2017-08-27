@@ -15,10 +15,10 @@ public class ChatUser implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username", unique = true, nullable = false)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "firstname")
@@ -27,7 +27,7 @@ public class ChatUser implements Serializable{
     @Column(name = "lastname")
     private String lastName;
 
-    @Column(name = "phone", unique = true)
+    @Column(name = "phone", unique = true, nullable = false)
     private String phone;
 
     @Column(name = "ustatus")
@@ -73,7 +73,14 @@ public class ChatUser implements Serializable{
         return null;
     }
 
-    public void removeContact(Contact contact) {contacts.remove(contact);}
+    public void removeContact(final Contact contact) {
+        Contact deletedContact = contacts.stream()
+                .filter(x -> contact.getPhone().equals(x.getPhone()))
+                .findAny()
+                .orElse(null);
+
+        contacts.remove(deletedContact);
+    }
 
     public Long getId() {
         return id;
@@ -141,7 +148,7 @@ public class ChatUser implements Serializable{
 
     @Override
     public boolean equals(Object that) {
-        String fields[] = {"id", "contacts"};
+        String fields[] = {"id", "contacts", "password"};
         return EqualsBuilder.reflectionEquals(this, that, fields);
     }
 

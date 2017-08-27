@@ -35,20 +35,20 @@ public class JpaUserRepositoryTest {
 
     @Test
     public void shouldSaveUserInDatabase() throws Exception {
-        ChatUser unsaved = new ChatUser("shirru", "qwerty", "Anna", "V",
-                "89110362157");
-        ChatUser saved = new ChatUser(1L, "shirru", "qwerty", "Anna", "V",
-                "89110362157", Status.online, null);
+        ChatUser unsaved = new ChatUser("user", "qwerty", "Anna", "V",
+                "89110362156");
+        ChatUser saved = new ChatUser(1L, "user", "qwerty", "Anna", "V",
+                "89110362156", Status.online, null);
 
         Assert.assertEquals(saved, userRepository.save(unsaved));
     }
 
     @Test
     public void shouldFindUserByIdInDatabase() throws Exception {
-        ChatUser userAnna = new ChatUser("shirru", "qwerty", "Anna",
-                "V", "89110362157");
-        ChatUser userVlad = new ChatUser("lynx", "qwerty","Vlad",
-                "A", "12345678911");
+        ChatUser userAnna = new ChatUser("user", "qwerty", "Anna",
+                "V", "89110362156");
+        ChatUser userVlad = new ChatUser("user2", "qwerty","Vlad",
+                "A", "12345678912");
 
         ChatUser savedAnna = userRepository.save(userAnna);
         ChatUser savedVlad = userRepository.save(userVlad);
@@ -61,10 +61,10 @@ public class JpaUserRepositoryTest {
 
     @Test
     public void shouldSetContactToUser() throws Exception {
-        ChatUser userAnna = new ChatUser("shirru", "qwerty","Anna",
-                "V", "89110362157");
-        ChatUser userVlad = new ChatUser("lynx", "qwerty","Vlad",
-                "A", "12345678911");
+        ChatUser userAnna = new ChatUser("user", "qwerty","Anna",
+                "V", "89110362156");
+        ChatUser userVlad = new ChatUser("user2", "qwerty","Vlad",
+                "A", "12345678912");
 
         ChatUser savedAnna = userRepository.save(userAnna);
         ChatUser savedVlad = userRepository.save(userVlad);
@@ -79,10 +79,10 @@ public class JpaUserRepositoryTest {
 
     @Test
     public void shouldFindUserByPhoneInDatabase() {
-        ChatUser userAnna = new ChatUser("shirru", "qwerty","Anna",
-                "V", "89110362157");
-        ChatUser userVlad = new ChatUser("lynx", "qwerty","Vlad",
-                "A", "12345678911");
+        ChatUser userAnna = new ChatUser("user", "qwerty","Anna",
+                "V", "89110362156");
+        ChatUser userVlad = new ChatUser("user2", "qwerty","Vlad",
+                "A", "12345678912");
 
         ChatUser savedAnna = userRepository.save(userAnna);
         ChatUser savedVlad = userRepository.save(userVlad);
@@ -95,8 +95,8 @@ public class JpaUserRepositoryTest {
 
     @Test
     public void shouldUpdateUserStatus() throws Exception {
-        ChatUser unsaved = new ChatUser("shirru", "qwerty","Anna", "V",
-                "89110362157");
+        ChatUser unsaved = new ChatUser("user", "qwerty","Anna", "V",
+                "89110362156");
 
         ChatUser saved = userRepository.save(unsaved);
 
@@ -110,5 +110,23 @@ public class JpaUserRepositoryTest {
         Assert.assertNull(userRepository.findByPhone("0"));
         Assert.assertNull(userRepository.updateStatusById(0L, "offline"));
         Assert.assertNull(userRepository.addUserContact(0L, "0"));
+    }
+
+    @Test
+    public void shouldDeleteUserContact() throws Exception {
+        ChatUser userAnna = new ChatUser("user", "qwerty","Anna",
+                "V", "89110362156");
+        ChatUser userVlad = new ChatUser("user2", "qwerty","Vlad",
+                "A", "12345678912");
+
+        ChatUser savedAnna = userRepository.save(userAnna);
+        ChatUser savedVlad = userRepository.save(userVlad);
+
+        userRepository.addUserContact(savedAnna.getId(), savedVlad.getPhone());
+
+        List <Contact> contacts = userRepository
+                .deleteUserContact(savedAnna, savedVlad.getPhone())
+                .getContacts();
+        Assert.assertEquals(0, contacts.size());
     }
 }

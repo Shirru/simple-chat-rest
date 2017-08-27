@@ -128,7 +128,6 @@ public class MessageControllerTest {
     public void shouldDeleteAllUserMessagesWithContact() throws Exception {
 
         mockMvc.perform(delete("/api/user/1/contact/" + users.get(1).getPhone() + "/messages")
-                .contentType(MediaType.APPLICATION_JSON)
                 .principal(principal)
         )
                 .andExpect(status().isNoContent());

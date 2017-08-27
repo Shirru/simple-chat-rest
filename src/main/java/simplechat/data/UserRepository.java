@@ -21,7 +21,7 @@ public interface UserRepository {
 
     List<Contact> findUserContacts(Long userId);
 
-    List<Contact> deleteUserContact(ChatUser user, String contactPhone);
+    ChatUser deleteUserContact(ChatUser user, String contactPhone);
 
     ChatUser updateStatusById(Long id, String newStatus);
 }

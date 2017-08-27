@@ -72,11 +72,11 @@ public class JpaUserRepository implements UserRepository{
         return userContact;
     }
 
-    public List<Contact> deleteUserContact(ChatUser user, String contactPhone) {
+    public ChatUser deleteUserContact(ChatUser user, String contactPhone) {
         ChatUser contactUser = findByPhone(contactPhone);
         if (contactUser == null) return null;
         user.removeContact(new Contact(contactUser.getUsername(), contactPhone));
-        return user.getContacts();
+        return entityManager.merge(user);
     }
 
 

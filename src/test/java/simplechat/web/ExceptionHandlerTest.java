@@ -64,12 +64,12 @@ public class ExceptionHandlerTest {
     }
 
     @Test
-    @WithMockUser(username = "shirru")
+    @WithMockUser(username = "user")
     public void shouldSendStatusConflictWhenUserAlreadyExist() throws Exception {
-        ChatUser chatUser = new ChatUser("shirru", "qwerty","Anna", "V",
-                "89110362157");
-        ChatUser sameUser = new ChatUser("shirru", "qwerty","Anna", "V",
-                "89110362157");
+        ChatUser chatUser = new ChatUser("user", "qwerty","Anna", "V",
+                "89110362151");
+        ChatUser sameUser = new ChatUser("user", "qwerty","Anna", "V",
+                "89110362151");
         userRepository.save(chatUser);
 
         String jsonUnsaved = objectMapper.writeValueAsString(sameUser);
@@ -105,8 +105,8 @@ public class ExceptionHandlerTest {
     @Test
     @WithMockUser("lynx")
     public void shouldSendStatusUnauthorizedWhenUpdateUserInfo() throws Exception {
-        ChatUser chatUser = new ChatUser("shirru", "qwerty","Anna", "V",
-                "89110362157");
+        ChatUser chatUser = new ChatUser("user", "qwerty","Anna", "V",
+                "89110362151");
         ChatUser saved = userRepository.save(chatUser);
 
         Map<String, String> status = new HashMap<String, String>();
@@ -134,8 +134,8 @@ public class ExceptionHandlerTest {
 
     @Test
     public void shouldSendStatusConflictWhenContactAlreadyExist() throws Exception{
-        ChatUser chatUser = new ChatUser("shirru", "qwerty","Anna", "V",
-                "89110362157");
+        ChatUser chatUser = new ChatUser("user", "qwerty","Anna", "V",
+                "89110362151");
         ChatUser contact = new ChatUser("wqe", "qwerty","A", "V",
                 "77777777777");
         ChatUser saved = userRepository.save(chatUser);
@@ -145,7 +145,7 @@ public class ExceptionHandlerTest {
 
         Principal principal = new Principal() {
             public String getName() {
-                return "shirru";
+                return "user";
             }
         };
 
@@ -163,6 +163,22 @@ public class ExceptionHandlerTest {
                 .andExpect(jsonPath("$.code", is(0)))
                 .andExpect(jsonPath("$.message",
                         is("Contact [" + contact.getPhone() + "] already exist")));
+    }
+
+    @Test
+   // @WithAnonymousUser
+    public void UnauthorizedReturns401() throws Exception {
+
+        mockMvc.perform(post("/api/user/1/contacts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+                .principal(new Principal() {
+                    @Override
+                    public String getName() {
+                        return "shouldBeUnauthorized";
+                    }
+                })
+        ).andExpect(status().is(401));
     }
 
 }
