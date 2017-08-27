@@ -27,7 +27,6 @@ public class UserControllerTest {
     private UserRepository mockRepository;
     private ChatUser unsaved;
     private ChatUser saved;
-    private UserController controller;
     private MockMvc mockMvc;
 
     @Before
@@ -46,8 +45,12 @@ public class UserControllerTest {
         when(mockRepository.updateStatusById(1L, "offline")).thenReturn(merged);
         when(mockRepository.findById(1L)).thenReturn(saved);
 
-        controller = new UserController(mockRepository);
-        mockMvc = standaloneSetup(controller).build();
+        UserController controller = new UserController(mockRepository);
+
+        UserController spyController = spy(controller);
+        //when(spyController.checkUserCredentials(1L, null, mockRepository)).thenReturn(saved);
+        doReturn(saved).when(spyController).checkUserCredentials(1L, null, mockRepository);
+        mockMvc = standaloneSetup(spyController).build();
     }
 
     @Test
@@ -75,11 +78,7 @@ public class UserControllerTest {
         status.put("status", "offline");
         String jsonContent = objectMapper.writeValueAsString(status);
 
-        Principal principal = new Principal() {
-            public String getName() {
-                return "shirru";
-            }
-        };
+        Principal principal = () -> "shirru";
 
         mockMvc.perform(put("/api/user/1")
                 .contentType(MediaType.APPLICATION_JSON)

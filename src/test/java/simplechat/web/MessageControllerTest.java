@@ -39,11 +39,7 @@ public class MessageControllerTest {
     @Before
     public void setUp() {
 
-        principal = new Principal() {
-            public String getName() {
-                return "shirru";
-            }
-        };
+        principal = () -> "shirru";
 
         objectMapper = new ObjectMapper();
         mockUserRepository = mock(UserRepository.class);

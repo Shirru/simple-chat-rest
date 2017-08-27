@@ -112,11 +112,7 @@ public class ExceptionHandlerTest {
         status.put("status", "offline");
         String jsonContent = objectMapper.writeValueAsString(status);
 
-        Principal principal = new Principal() {
-            public String getName() {
-                return "lynx";
-            }
-        };
+        Principal principal = () -> "lynx";
 
         mockMvc.perform(put("/api/user/" + saved.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -132,6 +128,7 @@ public class ExceptionHandlerTest {
     }
 
     @Test
+    @WithMockUser
     public void shouldSendStatusConflictWhenContactAlreadyExist() throws Exception{
         ChatUser chatUser = new ChatUser("user", "qwerty","Anna", "V",
                 "89110362151");
@@ -142,11 +139,7 @@ public class ExceptionHandlerTest {
 
         userRepository.addUserContact(saved, contact.getPhone());
 
-        Principal principal = new Principal() {
-            public String getName() {
-                return "user";
-            }
-        };
+        Principal principal = () -> "user";
 
         Map<String, String> phone = new HashMap<String, String>();
         phone.put("phone", contact.getPhone());

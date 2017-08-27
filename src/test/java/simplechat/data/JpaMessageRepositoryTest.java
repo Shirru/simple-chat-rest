@@ -81,7 +81,8 @@ public class JpaMessageRepositoryTest {
         Assert.assertEquals(messages.subList(0, 2),
                 messageRepository.findUserMessagesWithContact(users.get(0).getId(), users.get(1).getId()));
 
-        Assert.assertNull(messageRepository.findUserMessagesWithContact(0L, 0L));
+        Assert.assertEquals(0,
+                messageRepository.findUserMessagesWithContact(0L, 0L).size());
     }
 
     @Test
@@ -98,6 +99,7 @@ public class JpaMessageRepositoryTest {
 
         messageRepository.deleteAllUserMessagesWithContact(users.get(0).getId(), users.get(1).getId());
 
-        Assert.assertNull(messageRepository.findUserMessagesWithContact(users.get(0).getId(), users.get(1).getId()));
+        Assert.assertEquals(0,
+                messageRepository.findUserMessagesWithContact(users.get(0).getId(), users.get(1).getId()).size());
     }
 }

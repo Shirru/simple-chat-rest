@@ -31,18 +31,15 @@ public class ContactControllerTest {
     private List<ChatUser> users;
     private MockMvc mockMvc;
     private Principal principal;
+    private UserRepository mockRepository;
 
     @Before
     public void setUp() {
 
-        principal = new Principal() {
-            public String getName() {
-                return "shirru";
-            }
-        };
+        principal = () -> "shirru";
 
         objectMapper = new ObjectMapper();
-        UserRepository mockRepository = mock(UserRepository.class);
+        mockRepository = mock(UserRepository.class);
 
         users = new ArrayList<ChatUser>();
         users.add(new ChatUser(1L, "shirru", "qwerty","Anna", "V",
@@ -62,7 +59,6 @@ public class ContactControllerTest {
 
         when(mockRepository.addUserContact(users.get(0), users.get(1)))
                 .thenReturn(new Contact(users.get(1).getUsername(), users.get(1).getPhone()));
-
 
         ContactController controller = new ContactController(mockRepository);
         mockMvc = standaloneSetup(controller).build();
@@ -106,10 +102,10 @@ public class ContactControllerTest {
 
     @Test
     public void shouldDeleteUserContact() throws Exception {
-        users.get(0).addContact(new Contact(users.get(1).getUsername(), users.get(1).getPhone()));
-        users.get(0).addContact(new Contact(users.get(2).getUsername(), users.get(2).getPhone()));
+        when(mockRepository.deleteUserContact(users.get(0), "123456"))
+                .thenReturn(users.get(0));
 
-        mockMvc.perform(delete("/api/user/1/contacts/" + users.get(2).getPhone())
+        mockMvc.perform(delete("/api/user/1/contacts/" + "123456")
                 .contentType(MediaType.APPLICATION_JSON)
                 .principal(principal)
         )
