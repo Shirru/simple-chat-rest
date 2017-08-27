@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -13,10 +14,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import simplechat.config.DataConfig;
-import simplechat.config.RootConfig;
-import simplechat.config.SimpleChatAppConfig;
-import simplechat.config.WebConfig;
+import simplechat.config.*;
 import simplechat.data.UserRepository;
 import simplechat.domain.ChatUser;
 
@@ -31,7 +29,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { SimpleChatAppConfig.class, WebConfig.class, DataConfig.class, RootConfig.class})
+@ContextConfiguration(classes = { SimpleChatAppConfig.class, WebConfig.class, DataConfig.class, RootConfig.class,
+        SecurityConfig.class, MethodSecurityConfig.class, SecurityWebInitializer.class})
 @Transactional
 public class ExceptionHandlerTest {
 
@@ -104,7 +103,7 @@ public class ExceptionHandlerTest {
 
     @Test
     @WithMockUser("lynx")
-    public void shouldSendStatusUnauthorizedWhenUpdateUserInfo() throws Exception {
+    public void shouldSendStatusForbiddenWhenUpdateUserInfo() throws Exception {
         ChatUser chatUser = new ChatUser("user", "qwerty","Anna", "V",
                 "89110362151");
         ChatUser saved = userRepository.save(chatUser);
@@ -124,7 +123,7 @@ public class ExceptionHandlerTest {
                 .content(jsonContent)
                 .principal(principal)
         )
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isForbidden())
                 .andExpect(content().contentTypeCompatibleWith("application/json"))
                 .andExpect(jsonPath("$.code", is(2)))
                 .andExpect(jsonPath("$.message", is("Access denied for user [" +
@@ -166,18 +165,12 @@ public class ExceptionHandlerTest {
     }
 
     @Test
-   // @WithAnonymousUser
+    @WithAnonymousUser
     public void UnauthorizedReturns401() throws Exception {
 
         mockMvc.perform(post("/api/user/1/contacts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}")
-                .principal(new Principal() {
-                    @Override
-                    public String getName() {
-                        return "shouldBeUnauthorized";
-                    }
-                })
         ).andExpect(status().is(401));
     }
 

@@ -5,14 +5,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import simplechat.data.UserRepository;
 import simplechat.domain.ChatUser;
 import simplechat.error.ChatUserAlreadyExistException;
-import simplechat.error.ChatUserNotFoundException;
 
 import java.net.URI;
 import java.security.Principal;
@@ -21,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+public class UserController extends UserCredentialsCheck{
 
     private UserRepository userRepository;
 
@@ -53,24 +52,19 @@ public class UserController {
         return new ResponseEntity<Map<String, Long>>(userId, headers, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostAuthorize("returnObject.username == principal.username")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ChatUser getUserInfo(@PathVariable Long id) {
-        ChatUser chatUser = userRepository.findById(id);
-        if (chatUser == null) { throw new ChatUserNotFoundException(id);}
-        return chatUser;
+    public ChatUser getUserInfo(@PathVariable Long id, Principal principal) {
+        return checkUserCredentials(id, principal, userRepository);
     }
 
-    @PostAuthorize("returnObject.username == principal.name")
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
     public ChatUser updateUserStatus(@PathVariable Long id, @RequestBody Map<String, String> status,
                                      Principal principal) {
-        ChatUser chatUser = userRepository.findById(id);
-        if (chatUser == null) { throw new ChatUserNotFoundException(id);}
-
-        if(chatUser.getUsername().equals(principal.getName()))
-            return userRepository.updateStatusById(id, status.get("status"));
-        else { throw new BadCredentialsException(principal.getName());}
+        checkUserCredentials(id, principal, userRepository);
+        return userRepository.updateStatusById(id, status.get("status"));
     }
 
 }

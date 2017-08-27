@@ -2,6 +2,7 @@ package simplechat.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import simplechat.data.UserRepository;
 import simplechat.data.jpa.MessageRepository;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user/{id}/contact/{contactPhone}/messages")
+@PreAuthorize("isAuthenticated()")
 public class MessageController extends UserCredentialsCheck{
 
     private MessageRepository messageRepository;

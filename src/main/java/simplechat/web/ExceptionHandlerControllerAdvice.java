@@ -25,7 +25,7 @@ public class ExceptionHandlerControllerAdvice {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public Error accessDenied(BadCredentialsException e) {
         return new Error(2, "Access denied for user [" + e.getMessage() + "]");
     }
