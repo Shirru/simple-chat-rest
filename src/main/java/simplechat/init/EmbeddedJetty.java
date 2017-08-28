@@ -5,6 +5,7 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
@@ -13,6 +14,8 @@ import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.DispatcherType;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.EnumSet;
@@ -23,8 +26,19 @@ public class EmbeddedJetty {
     private static Properties properties;
 
     public static void main(String[] args) throws Exception {
+
+        InputStream stream;
+
+        if (System.getProperty("properties") != null)
+        {
+            File initialFile = new File(System.getProperty("properties"));
+            stream = new FileInputStream(initialFile);
+        }
+        else {
+            stream = EmbeddedJetty.class.getResourceAsStream("/webapp/WEB-INF/app.properties");
+        }
+
         properties = new Properties();
-        InputStream stream = EmbeddedJetty.class.getResourceAsStream("/webapp/WEB-INF/app.properties");
         properties.load(stream);
         stream.close();
 
@@ -56,6 +70,8 @@ public class EmbeddedJetty {
     private static WebApplicationContext getContext() {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.setConfigLocation(properties.getProperty("jetty.configLocation"));
+        context.getEnvironment().getPropertySources()
+                .addLast(new PropertiesPropertySource("applicationEnvironment", properties));
         return context;
     }
 
