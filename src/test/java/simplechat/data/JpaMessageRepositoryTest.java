@@ -27,7 +27,7 @@ import java.util.List;
 @WebAppConfiguration
 @ContextConfiguration(classes = { SimpleChatAppConfig.class, WebConfig.class, DataConfig.class, RootConfig.class})
 @Transactional
-@TestPropertySource("classpath:/simplechat/test.properties")
+@TestPropertySource("classpath:/resources/test.properties")
 public class JpaMessageRepositoryTest {
 
     @Autowired
