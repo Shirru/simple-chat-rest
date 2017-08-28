@@ -30,9 +30,34 @@
             </plugin>
 
             <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+                    <resources>
+                        <resource>
+                            <directory>src/test/java/simplechat</directory>
+                            <includes>
+                                <include>test.properties</include>
+                            </includes>
+                        </resource>
+                    </resources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-resource-one</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.1</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -78,7 +103,6 @@
             <artifactId>jetty-util</artifactId>
             <version>9.4.6.v20170531</version>
         </dependency>
-
 
         <!-- common !-->
         <dependency>
