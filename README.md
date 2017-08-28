@@ -8,7 +8,7 @@ with their contacts.
 After passing the basic authentication, the user must be registered in the database (/api/user/register).
 
 URLs responds to (begin with /api):
-- `/user/register` - POST for adding user's info into DB
+- `/user/register` - POST for register user and adding into DB
 - `/user/{id}` - GET for getting info about user; PUT for updating status (online/offline)
 - `/user/{id}/contacts` - GET for getting user's contacts; POST for adding contact to user
 - `/user/{id}/contact/{phone}` - DELETE for deleting contact
@@ -17,4 +17,8 @@ URLs responds to (begin with /api):
 <hr>
 
 ### To run app
-Import the project as a maven project into your IDE of choice. You also should configure server configuration.
+- `git clone`
+- edit the connection settings to the DB in `simple-chat-rest/src/test/java/resources/test.properties`, so that the tests can be passed
+- `mvn package`
+- `java [-Dproperties="path/to/application.properties"] -jar target/SimpleChat-1.0.jar`
+- the default settings are contained in this file: https://github.com/Shirru/simple-chat-rest/blob/master/src/main/webapp/WEB-INF/app.properties
