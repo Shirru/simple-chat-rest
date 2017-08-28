@@ -5,8 +5,6 @@ produses/consumes JSON.
 In this app users can create contact list by finding other users by the phone number. Then, users can exchange messages
 with their contacts.
 
-After passing the basic authentication, the user must be registered in the database (/api/user/register).
-
 URLs responds to (begin with /api):
 - `/user/register` - POST for register user and adding into DB
 - `/user/{id}` - GET for getting info about user; PUT for updating status (online/offline)
