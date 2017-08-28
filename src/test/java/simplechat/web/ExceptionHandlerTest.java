@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextConfiguration(classes = { SimpleChatAppConfig.class, WebConfig.class, DataConfig.class, RootConfig.class,
         SecurityConfig.class, MethodSecurityConfig.class, SecurityWebInitializer.class})
 @Transactional
-@TestPropertySource("classpath:/simplechat/app.properties")
+@TestPropertySource("classpath:/simplechat/test.properties")
 public class ExceptionHandlerTest {
 
     @Autowired
