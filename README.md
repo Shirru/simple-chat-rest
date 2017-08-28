@@ -18,7 +18,7 @@ URLs responds to (begin with /api):
 
 ### To run app
 - `git clone`
-- edit the connection settings to the DB in `simple-chat-rest/src/test/java/resources/test.properties`, so that the tests can be passed
+- edit the connection settings for the DB in `simple-chat-rest/src/test/java/resources/test.properties`, so that the tests can be passed
 - `mvn package`
 - `java [-Dproperties="path/to/application.properties"] -jar target/SimpleChat-1.0.jar`
 - the default settings are contained in this file: https://github.com/Shirru/simple-chat-rest/blob/master/src/main/webapp/WEB-INF/app.properties
